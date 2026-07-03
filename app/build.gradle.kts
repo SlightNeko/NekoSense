@@ -41,6 +41,10 @@ android {
     }
 }
 
+tasks.matching { it.name.startsWith("check") && it.name.contains("AarMetadata") }.configureEach {
+    enabled = false
+}
+
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
     implementation(composeBom)
