@@ -13,9 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sensitivitysync.data.PermissionState
-import top.yukonga.miuix.kmp.basic.Scafall
-import top.yukonga.miuix.kmp.basic.TopAppBar
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
@@ -30,8 +32,8 @@ fun HomeScreen(
     var baseSensA by remember { mutableStateOf("70") }
     var accelA by remember { mutableStateOf("125") }
 
-    Scafall(
-        topAppBar = TopAppBar(title = "NekoSense")
+    Scaffold(
+        topBar = { TopAppBar(title = { Text("NekoSense") }) }
     ) {
         Column(
             modifier = Modifier
