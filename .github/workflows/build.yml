@@ -18,6 +18,12 @@ jobs:
           java-version: 17
           distribution: 'temurin'
 
+      - name: Install Android SDK 37
+        run: |
+          if [ ! -d "$ANDROID_HOME/platforms/android-37" ]; then
+            yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-37"
+          fi
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
