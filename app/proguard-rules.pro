@@ -1,0 +1,2 @@
+-keep class com.sensitivitysync.** { *; }
+-keep class dev.rikka.shizuku.** { *; }
