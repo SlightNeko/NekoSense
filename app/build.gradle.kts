@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.sensitivitysync"
-    compileSdk = 37
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.sensitivitysync"
         minSdk = 26
-        targetSdk = 37
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
     }
@@ -54,7 +54,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
-    implementation("top.yukonga.miuix.kmp:miuix-ui:0.9.2")
+    implementation("top.yukonga.miuix.kmp:miuix-ui:0.8.8")
 
     implementation("dev.rikka.shizuku:api:13.1.5")
     implementation("dev.rikka.shizuku:provider:13.1.5")
