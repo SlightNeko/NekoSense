@@ -39,6 +39,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    aarMetadata {
+        minCompileSdk = 35
+    }
 }
 
 dependencies {
