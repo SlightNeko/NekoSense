@@ -39,10 +39,6 @@ android {
     buildFeatures {
         compose = true
     }
-
-    aarMetadata {
-        minCompileSdk = 35
-    }
 }
 
 dependencies {
@@ -58,7 +54,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
-    implementation("top.yukonga.miuix.kmp:miuix-ui:0.9.2")
+    implementation("top.yukonga.miuix.kmp:miuix-ui:0.9.0")
 
     implementation("dev.rikka.shizuku:api:13.1.5")
     implementation("dev.rikka.shizuku:provider:13.1.5")
