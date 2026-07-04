@@ -26,8 +26,18 @@ jobs:
       - name: Generate Gradle Wrapper
         run: gradle wrapper --gradle-version 8.11.1
 
+      - name: Generate debug keystore
+        run: |
+          keytool -genkey -v -keystore app/slightNeko.keystore \
+            -alias slightNeko -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=NekoSense, OU=Dev, O=SlightNeko, L=Unknown, ST=Unknown, C=CN"
+          echo "KEYSTORE_PASSWORD=android" >> $GITHUB_ENV
+          echo "KEY_ALIAS=slightNeko" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=android" >> $GITHUB_ENV
+
       - name: Build Release APK
-        run: ./gradlew assembleRelease --no-daemon --refresh-dependencies
+        run: ./gradlew assembleRelease --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
