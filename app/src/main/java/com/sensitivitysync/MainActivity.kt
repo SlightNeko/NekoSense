@@ -10,13 +10,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModelProvider
 import com.sensitivitysync.ui.screen.HomeScreen
 import com.sensitivitysync.ui.screen.HomeViewModel
 import com.sensitivitysync.ui.theme.NekoSenseTheme
-import dev.rikka.shizuku.Shizuku
-import dev.rikka.shizuku.Shizuku.OnRequestPermissionResultListener
+import rikka.shizuku.Shizuku
+import rikka.shizuku.Shizuku.OnRequestPermissionResultListener
 
 class MainActivity : ComponentActivity() {
 

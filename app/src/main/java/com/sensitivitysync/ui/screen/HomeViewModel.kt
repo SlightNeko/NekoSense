@@ -20,7 +20,7 @@ import com.sensitivitysync.data.PermissionState
 import com.sensitivitysync.data.Permissions
 import com.sensitivitysync.service.CaptureService
 import com.sensitivitysync.shizuku.ShizukuManager
-import dev.rikka.shizuku.Shizuku
+import rikka.shizuku.Shizuku
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

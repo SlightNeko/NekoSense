@@ -2,8 +2,8 @@ package com.sensitivitysync.shizuku
 
 import android.os.IBinder
 import android.os.RemoteException
-import dev.rikka.shizuku.Shizuku
-import dev.rikka.shizuku.ShizukuProvider
+import rikka.shizuku.Shizuku
+import rikka.shizuku.ShizukuProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader

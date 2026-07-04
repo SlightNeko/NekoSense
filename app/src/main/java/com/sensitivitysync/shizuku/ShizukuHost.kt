@@ -1,8 +1,8 @@
 package com.sensitivitysync.shizuku
 
 import android.os.IBinder
-import dev.rikka.shizuku.ShizukuBinderWrapper
-import dev.rikka.shizuku.SystemServiceHelper
+import rikka.shizuku.ShizukuBinderWrapper
+import rikka.shizuku.SystemServiceHelper
 
 class ShizukuHost {
 
