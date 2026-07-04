@@ -131,6 +131,4 @@ class CalibrationEngine(
         rotationDetector.reset()
     }
 
-    private fun String.Companion.format(fmt: String, vararg args: Any?): String =
-        String.format(fmt, *args)
 }
