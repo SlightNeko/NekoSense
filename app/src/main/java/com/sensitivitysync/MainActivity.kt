@@ -9,14 +9,14 @@ import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.lifecycle.ViewModelProvider
 import com.sensitivitysync.ui.screen.HomeScreen
 import com.sensitivitysync.ui.screen.HomeViewModel
 import com.sensitivitysync.ui.theme.NekoSenseTheme
 import dev.rikka.shizuku.Shizuku
+import dev.rikka.shizuku.Shizuku.OnRequestPermissionResultListener
 
 class MainActivity : ComponentActivity() {
 
@@ -30,38 +30,26 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = viewModel()
+        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
-        Shizuku.addRequestPermissionListener(requestPermissionListener)
+        if (Shizuku.pingBinder()) {
+            Shizuku.addRequestPermissionListener(requestPermissionListener)
+        }
 
         setContent {
             NekoSenseTheme {
-                HomeScreen(
-                    viewModel = viewModel,
-                    onRequestShizuku = { requestShizuku() },
-                    onRequestMediaProjection = { requestMediaProjection() },
-                    onOpenOverlaySettings = { openOverlaySettings() }
-                )
+                MainScreen(viewModel)
             }
         }
     }
 
     private fun requestShizuku() {
-        if (Shizuku.isPreV11() || !Shizuku.pingBinder()) {
-            Shizuku.shouldShowRequestPermissionRationale()
-        }
-        Shizuku.requestPermission(HomeViewModel.REQUEST_SHIZUKU)
+        Shizuku.requestPermission(SHIZUKU_REQUEST_CODE)
     }
 
     private fun requestMediaProjection() {
-        val intent = Intent(this, mediaProjectionLauncher.javaClass).apply {
-            val mpManager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-            putExtra("intent", mpManager.createScreenCaptureIntent())
-        }
-        mediaProjectionLauncher.launch(
-            (getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager)
-                .createScreenCaptureIntent()
-        )
+        val mpManager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+        mediaProjectionLauncher.launch(mpManager.createScreenCaptureIntent())
     }
 
     private fun openOverlaySettings() {
@@ -78,18 +66,30 @@ class MainActivity : ComponentActivity() {
         viewModel.onOverlayPermissionResult(true)
     }
 
-    private val requestPermissionListener = object : Shizuku.OnRequestPermissionResultListener {
-        override fun onRequestPermissionResult(requestCode: Int, grantResult: Int) {
-            if (requestCode == HomeViewModel.REQUEST_SHIZUKU) {
-                if (grantResult == Shizuku.PERMISSION_GRANTED) {
-                    viewModel.onShizukuGranted()
-                }
-            }
+    private val requestPermissionListener = OnRequestPermissionResultListener { requestCode, grantResult ->
+        if (requestCode == SHIZUKU_REQUEST_CODE && grantResult == Shizuku.PERMISSION_GRANTED) {
+            viewModel.onShizukuGranted()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Shizuku.removeRequestPermissionListener(requestPermissionListener)
+        if (Shizuku.pingBinder()) {
+            Shizuku.removeRequestPermissionListener(requestPermissionListener)
+        }
+    }
+
+    @Composable
+    private fun MainScreen(vm: HomeViewModel) {
+        HomeScreen(
+            viewModel = vm,
+            onRequestShizuku = { requestShizuku() },
+            onRequestMediaProjection = { requestMediaProjection() },
+            onOpenOverlaySettings = { openOverlaySettings() }
+        )
+    }
+
+    companion object {
+        const val SHIZUKU_REQUEST_CODE = 1000
     }
 }
