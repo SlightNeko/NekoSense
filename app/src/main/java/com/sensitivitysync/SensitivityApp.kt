@@ -4,8 +4,6 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import android.os.Environment
-import java.io.File
 import java.io.FileWriter
 
 class SensitivityApp : Application() {
@@ -19,8 +17,7 @@ class SensitivityApp : Application() {
         val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
             try {
-                val logDir = getExternalFilesDir(null) ?: filesDir
-                val crashFile = File(logDir, "crash.log")
+                val crashFile = filesDir.resolve("crash.log")
                 FileWriter(crashFile).use { w ->
                     w.write("=== CRASH ===\n")
                     w.write("Time: ${System.currentTimeMillis()}\n")
