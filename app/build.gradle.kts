@@ -70,4 +70,5 @@ dependencies {
     // implementation("top.yukonga.miuix.kmp:miuix-ui:0.9.2")
 
     implementation("dev.rikka.shizuku:api:13.1.5")
+    implementation("dev.rikka.shizuku:provider:13.1.5")
 }
