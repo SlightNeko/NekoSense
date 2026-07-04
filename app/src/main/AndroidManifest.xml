@@ -24,18 +24,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".service.CaptureService"
-            android:foregroundServiceType="mediaProjection"
-            android:exported="false" />
-
-        <provider
-            android:name="rikka.shizuku.ShizukuProvider"
-            android:authorities="${applicationId}.shizuku"
-            android:enabled="true"
-            android:exported="false"
-            android:multiprocess="false" />
-
     </application>
 
 </manifest>
