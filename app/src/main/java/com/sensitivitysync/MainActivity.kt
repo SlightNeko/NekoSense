@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,10 +31,16 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
-        if (Shizuku.pingBinder()) {
-            Shizuku.addRequestPermissionResultListener(requestPermissionListener)
+        try {
+            viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+
+            if (Shizuku.pingBinder()) {
+                Shizuku.addRequestPermissionResultListener(requestPermissionListener)
+            }
+        } catch (e: Exception) {
+            Log.e("NekoSense", "Init failed", e)
+            throw e
         }
 
         setContent {
@@ -44,7 +51,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun requestShizuku() {
-        Shizuku.requestPermission(SHIZUKU_REQUEST_CODE)
+        try {
+            if (Shizuku.pingBinder()) {
+                Shizuku.requestPermission(SHIZUKU_REQUEST_CODE)
+            }
+        } catch (e: Exception) {
+            Log.e("NekoSense", "requestShizuku failed", e)
+        }
     }
 
     private fun requestMediaProjection() {
@@ -74,8 +87,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (Shizuku.pingBinder()) {
-            Shizuku.removeRequestPermissionResultListener(requestPermissionListener)
+        try {
+            if (Shizuku.pingBinder()) {
+                Shizuku.removeRequestPermissionResultListener(requestPermissionListener)
+            }
+        } catch (_: Exception) {
         }
     }
 

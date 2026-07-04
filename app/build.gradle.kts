@@ -16,15 +16,6 @@ android {
         versionName = "1.0.0"
     }
 
-    signingConfigs {
-        create("slightNeko") {
-            storeFile = file("slightNeko.keystore")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "android"
-            keyAlias = System.getenv("KEY_ALIAS") ?: "slightNeko"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "android"
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -33,7 +24,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs["slightNeko"]
         }
     }
 
