@@ -14,45 +14,27 @@
             android:fillColor="#E94560"
             android:pathData="M68,28 L72,0 L52,12 Z" />
         <!-- Cat head -->
-        <ellipse
-            android:cx="38"
-            android:cy="42"
-            android:rx="26"
-            android:ry="22"
-            android:fillColor="#E94560" />
+        <path
+            android:fillColor="#E94560"
+            android:pathData="M12,42 C12,26 64,26 64,42 C64,58 12,58 12,42 Z" />
         <!-- Eyes -->
-        <ellipse
-            android:cx="28"
-            android:cy="38"
-            android:rx="6"
-            android:ry="7"
-            android:fillColor="#FFFFFF" />
-        <ellipse
-            android:cx="48"
-            android:cy="38"
-            android:rx="6"
-            android:ry="7"
-            android:fillColor="#FFFFFF" />
-        <ellipse
-            android:cx="29"
-            android:cy="39"
-            android:rx="3"
-            android:ry="4"
-            android:fillColor="#16213E" />
-        <ellipse
-            android:cx="47"
-            android:cy="39"
-            android:rx="3"
-            android:ry="4"
-            android:fillColor="#16213E" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M22,38 C22,33 34,33 34,38 C34,43 22,43 22,38 Z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M42,38 C42,33 54,33 54,38 C54,43 42,43 42,38 Z" />
+        <!-- Pupils -->
+        <path
+            android:fillColor="#16213E"
+            android:pathData="M26,39 C26,37 30,37 30,39 C30,41 26,41 26,39 Z" />
+        <path
+            android:fillColor="#16213E"
+            android:pathData="M46,39 C46,37 50,37 50,39 C50,41 46,41 46,39 Z" />
         <!-- Tech chip -->
-        <rect
-            android:width="10"
-            android:height="5"
-            android:rx="1"
-            android:x="33"
-            android:y="30"
-            android:fillColor="#00FFFF" />
+        <path
+            android:fillColor="#00FFFF"
+            android:pathData="M33,30 L43,30 L43,35 L33,35 Z" />
         <!-- Whiskers -->
         <path
             android:pathData="M6,42 L18,44"
