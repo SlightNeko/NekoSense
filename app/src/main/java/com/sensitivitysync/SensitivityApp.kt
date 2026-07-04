@@ -4,11 +4,42 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import android.os.Environment
+import java.io.File
+import java.io.FileWriter
 
 class SensitivityApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        installCrashHandler()
         createNotificationChannel()
+    }
+
+    private fun installCrashHandler() {
+        val defaultHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            try {
+                val logDir = getExternalFilesDir(null) ?: filesDir
+                val crashFile = File(logDir, "crash.log")
+                FileWriter(crashFile).use { w ->
+                    w.write("=== CRASH ===\n")
+                    w.write("Time: ${System.currentTimeMillis()}\n")
+                    w.write("Thread: ${thread.name}\n")
+                    w.write("${throwable.javaClass.name}: ${throwable.message}\n")
+                    for (ste in throwable.stackTrace) {
+                        w.write("\tat $ste\n")
+                    }
+                    throwable.cause?.let { cause ->
+                        w.write("Caused by: ${cause.javaClass.name}: ${cause.message}\n")
+                        for (ste in cause.stackTrace) {
+                            w.write("\tat $ste\n")
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+            }
+            defaultHandler?.uncaughtException(thread, throwable)
+        }
     }
 
     private fun createNotificationChannel() {
