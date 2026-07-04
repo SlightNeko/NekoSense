@@ -1,6 +1,7 @@
 package com.sensitivitysync
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.Build
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
         if (Shizuku.pingBinder()) {
-            Shizuku.addRequestPermissionListener(requestPermissionListener)
+            Shizuku.addRequestPermissionResultListener(requestPermissionListener)
         }
 
         setContent {
@@ -66,7 +67,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private val requestPermissionListener = OnRequestPermissionResultListener { requestCode, grantResult ->
-        if (requestCode == SHIZUKU_REQUEST_CODE && grantResult == Shizuku.PERMISSION_GRANTED) {
+        if (requestCode == SHIZUKU_REQUEST_CODE && grantResult == PackageManager.PERMISSION_GRANTED) {
             viewModel.onShizukuGranted()
         }
     }
@@ -74,7 +75,7 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (Shizuku.pingBinder()) {
-            Shizuku.removeRequestPermissionListener(requestPermissionListener)
+            Shizuku.removeRequestPermissionResultListener(requestPermissionListener)
         }
     }
 
