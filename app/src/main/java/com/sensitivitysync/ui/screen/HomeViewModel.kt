@@ -109,12 +109,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         try {
             engine.startNewSession()
             engine.setGameAInput(baseSensA, accelA)
+            if (_permissions.value.overlay == PermissionState.GRANTED) {
+                showFloatingOverlay()
+            }
             engine.setStatus("请在游戏中切换到 A 游戏，然后点「慢划」按钮")
         } catch (e: Exception) {
             val msg = "启动失败: ${e.javaClass.simpleName}: ${e.message}"
-            android.util.Log.e("NekoSense", msg, e)
             engine.setStatus(msg)
         }
+    }
     }
 
     fun onSlowSwipe() {
