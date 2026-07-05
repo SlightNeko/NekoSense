@@ -31,6 +31,8 @@ fun HomeScreen(
 
     var baseSensA by remember { mutableStateOf("70") }
     var accelA by remember { mutableStateOf("125") }
+    var gameBBase by remember { mutableStateOf("") }
+    var gameBAccel by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("NekoSense") }) }
@@ -49,27 +51,29 @@ fun HomeScreen(
             ) {
                 Column(Modifier.padding(20.dp)) {
                     Text(
-                        text = "Permissions",
+                        text = "权限",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(Modifier.height(12.dp))
 
                     PermissionRow("Shizuku", permissions.shizuku == PermissionState.GRANTED, onRequestShizuku)
-                    PermissionRow("Screen Capture", permissions.mediaProjection == PermissionState.GRANTED, onRequestMediaProjection)
-                    PermissionRow("Overlay", permissions.overlay == PermissionState.GRANTED, onOpenOverlaySettings)
+                    PermissionRow("屏幕录制", permissions.mediaProjection == PermissionState.GRANTED, onRequestMediaProjection)
+                    PermissionRow("悬浮窗", permissions.overlay == PermissionState.GRANTED, onOpenOverlaySettings)
                 }
             }
 
             Spacer(Modifier.height(16.dp))
 
-            if (permissions.shizuku == PermissionState.GRANTED) {
+            if (permissions.shizuku == PermissionState.GRANTED &&
+                permissions.mediaProjection == PermissionState.GRANTED
+            ) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors()
                 ) {
                     Column(Modifier.padding(20.dp)) {
                         Text(
-                            text = "Game A Settings",
+                            text = "游戏 A 灵敏度",
                             style = MaterialTheme.typography.titleMedium
                         )
                         Spacer(Modifier.height(12.dp))
@@ -77,14 +81,14 @@ fun HomeScreen(
                         OutlinedTextField(
                             value = baseSensA,
                             onValueChange = { baseSensA = it },
-                            label = { Text("Base Sensitivity") },
+                            label = { Text("基础灵敏度") },
                             modifier = Modifier.fillMaxWidth()
                         )
                         Spacer(Modifier.height(8.dp))
                         OutlinedTextField(
                             value = accelA,
                             onValueChange = { accelA = it },
-                            label = { Text("Acceleration") },
+                            label = { Text("加速度 (%)") },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -101,16 +105,29 @@ fun HomeScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Start Calibration")
+                    Text("开始校准")
                 }
 
-                Spacer(Modifier.height(16.dp))
-
                 if (status.isNotEmpty()) {
+                    Spacer(Modifier.height(12.dp))
                     Text(
                         text = status,
                         style = MaterialTheme.typography.bodyMedium
                     )
+                }
+
+                if (gameBBase.isNotEmpty() || gameBAccel.isNotEmpty()) {
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "游戏 B 转换结果",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    if (gameBBase.isNotEmpty()) {
+                        Text("基础灵敏度: $gameBBase")
+                    }
+                    if (gameBAccel.isNotEmpty()) {
+                        Text("加速度: $gameBAccel")
+                    }
                 }
             }
         }
@@ -140,7 +157,7 @@ private fun PermissionRow(
                     MaterialTheme.colorScheme.secondary
             )
         ) {
-            Text(text = if (granted) "Granted" else "Grant")
+            Text(text = if (granted) "已授权" else "授权")
         }
     }
 }

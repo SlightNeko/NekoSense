@@ -7,7 +7,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +23,7 @@ fun CalibrationOverlay(
     isActive: Boolean,
     onStartSlow: () -> Unit,
     onStartFast: () -> Unit,
+    onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -74,7 +74,7 @@ fun CalibrationOverlay(
                             containerColor = Color(0xFFE94560)
                         )
                     ) {
-                        Text("Slow", fontSize = 12.sp)
+                        Text("慢划", fontSize = 12.sp)
                     }
                     Button(
                         onClick = onStartFast,
@@ -82,8 +82,17 @@ fun CalibrationOverlay(
                             containerColor = Color(0xFF00B3B3)
                         )
                     ) {
-                        Text("Fast", fontSize = 12.sp)
+                        Text("快划", fontSize = 12.sp)
                     }
+                }
+                Spacer(Modifier.height(8.dp))
+                Button(
+                    onClick = onClose,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF666666)
+                    )
+                ) {
+                    Text("关闭", fontSize = 12.sp)
                 }
             }
         }

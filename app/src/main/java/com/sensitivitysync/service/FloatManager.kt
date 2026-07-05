@@ -7,9 +7,6 @@ import android.view.View
 import android.view.WindowManager
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
-import com.sensitivitysync.ui.component.CalibrationOverlay
 
 class FloatManager(private val context: Context) {
 
@@ -24,7 +21,6 @@ class FloatManager(private val context: Context) {
         else
             WindowManager.LayoutParams.TYPE_PHONE,
         WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
         PixelFormat.TRANSLUCENT
     ).apply {
@@ -43,7 +39,7 @@ class FloatManager(private val context: Context) {
 
     fun hideOverlay() {
         overlayView?.let {
-            wm.removeView(it)
+            try { wm.removeView(it) } catch (_: Exception) {} 
             overlayView = null
         }
     }

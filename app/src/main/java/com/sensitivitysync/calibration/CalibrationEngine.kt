@@ -17,6 +17,10 @@ class CalibrationEngine(
     private val _status = MutableStateFlow("")
     val status: StateFlow<String> = _status.asStateFlow()
 
+    fun setStatus(msg: String) {
+        _status.value = msg
+    }
+
     fun startNewSession() {
         _session.value = CalibrationSession(step = CalibrationStep.GAME_A_INPUT)
         _status.value = "Enter Game A settings"

@@ -4,8 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
-import android.hardware.display.DisplayManager
-import android.media.projection.MediaProjectionManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.lifecycle.AndroidViewModel
@@ -19,7 +17,9 @@ import com.sensitivitysync.data.CalibrationStep
 import com.sensitivitysync.data.PermissionState
 import com.sensitivitysync.data.Permissions
 import com.sensitivitysync.service.CaptureService
+import com.sensitivitysync.service.FloatManager
 import com.sensitivitysync.shizuku.ShizukuManager
+import com.sensitivitysync.ui.component.CalibrationOverlay
 import rikka.shizuku.Shizuku
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +36,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val engine = CalibrationEngine(
         swipeController, rotationDetector, accelMatcher, converter
     )
+    private val floatManager = FloatManager(application)
 
     private val _permissions = MutableStateFlow(Permissions())
     val permissions: StateFlow<Permissions> = _permissions.asStateFlow()
@@ -69,24 +70,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         swipeController.setScreenSize(metrics.widthPixels, metrics.heightPixels)
     }
 
-    fun requestShizuku() {
-        try {
-            Shizuku.requestPermission(REQUEST_SHIZUKU)
-        } catch (_: Exception) {
-            _permissions.value = _permissions.value.copy(shizuku = PermissionState.DENIED)
-        }
-    }
-
     fun onShizukuGranted() {
         _permissions.value = _permissions.value.copy(shizuku = PermissionState.GRANTED)
         shizukuManager.init()
-    }
-
-    fun requestMediaProjection(activity: Activity) {
-        val mpManager = activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE)
-                as MediaProjectionManager
-        val intent = mpManager.createScreenCaptureIntent()
-        activity.startActivityForResult(intent, REQUEST_MEDIA_PROJECTION)
     }
 
     fun onMediaProjectionResult(resultCode: Int, data: Intent?) {
@@ -97,16 +83,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             startCaptureService()
         } else {
             _permissions.value = _permissions.value.copy(mediaProjection = PermissionState.DENIED)
-        }
-    }
-
-    fun requestOverlayPermission(activity: Activity) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            val intent = Intent(
-                android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                android.net.Uri.parse("package:${activity.packageName}")
-            )
-            activity.startActivity(intent)
         }
     }
 
@@ -132,20 +108,61 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun startCalibration(baseSensA: Float, accelA: Int) {
         engine.startNewSession()
         engine.setGameAInput(baseSensA, accelA)
-        viewModelScope.launch {
-            // Calibration flow managed by engine + UI interaction
+        if (_permissions.value.overlay == PermissionState.GRANTED) {
+            showFloatingOverlay()
         }
     }
 
-    fun requestNotificationPermission(activity: Activity) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            activity.requestPermissions(
-                arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
-                REQUEST_NOTIFICATION
-            )
-        } else {
-            _permissions.value = _permissions.value.copy(notification = PermissionState.GRANTED)
+    fun onSlowSwipe() {
+        val step = session.value.step
+        if (step != CalibrationStep.GAME_A_SLOW_READY &&
+            step != CalibrationStep.GAME_B_SLOW_READY
+        ) return
+
+        viewModelScope.launch {
+            engine.setStatus("正在慢划 1500ms...")
+            val success = swipeController.swipeSlow()
+            if (success) {
+                engine.onSlowSwipeAComplete(60f)
+            } else {
+                engine.setStatus("慢划失败")
+            }
         }
+    }
+
+    fun onFastSwipe() {
+        val step = session.value.step
+        if (step != CalibrationStep.GAME_A_SLOW_DONE &&
+            step != CalibrationStep.GAME_B_SLOW_DONE
+        ) return
+
+        viewModelScope.launch {
+            engine.setStatus("正在快划 200ms...")
+            val success = swipeController.swipeFast()
+            if (success) {
+                engine.onFastSwipeAComplete(65f)
+            } else {
+                engine.setStatus("快划失败")
+            }
+        }
+    }
+
+    fun showFloatingOverlay() {
+        floatManager.showOverlay {
+            CalibrationOverlay(
+                status = status.value,
+                progress = 0f,
+                isActive = false,
+                onStartSlow = { onSlowSwipe() },
+                onStartFast = { onFastSwipe() },
+                onClose = { floatManager.hideOverlay() }
+            )
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        floatManager.hideOverlay()
     }
 
     companion object {
