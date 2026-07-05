@@ -118,7 +118,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             engine.setStatus(msg)
         }
     }
-    }
 
     fun onSlowSwipe() {
         val step = session.value.step
