@@ -107,22 +107,13 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun startCalibration(baseSensA: Float, accelA: Int) {
         try {
-            android.util.Log.e("NekoSense", "startCalibration: baseSensA=$baseSensA accelA=$accelA")
             engine.startNewSession()
-            android.util.Log.e("NekoSense", "step=${session.value.step}")
             engine.setGameAInput(baseSensA, accelA)
-            android.util.Log.e("NekoSense", "step=${session.value.step} status=${status.value}")
-            if (_permissions.value.overlay == PermissionState.GRANTED) {
-                try {
-                    showFloatingOverlay()
-                } catch (e: Exception) {
-                    android.util.Log.e("NekoSense", "showFloatingOverlay failed", e)
-                    engine.setStatus("悬浮窗启动失败: ${e.message}")
-                }
-            }
+            engine.setStatus("请在游戏中切换到 A 游戏，然后点「慢划」按钮")
         } catch (e: Exception) {
-            android.util.Log.e("NekoSense", "startCalibration failed", e)
-            engine.setStatus("启动失败: ${e.message}")
+            val msg = "启动失败: ${e.javaClass.simpleName}: ${e.message}"
+            android.util.Log.e("NekoSense", msg, e)
+            engine.setStatus(msg)
         }
     }
 
