@@ -24,6 +24,11 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".service.CaptureService"
+            android:foregroundServiceType="mediaProjection"
+            android:exported="false" />
+
         <provider
             android:name="rikka.shizuku.ShizukuProvider"
             android:authorities="${applicationId}.shizuku"
